@@ -1,6 +1,7 @@
 import pymongo
 
 
+#a test of my mongodb
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = client.mydb
 collection = mydb.user
