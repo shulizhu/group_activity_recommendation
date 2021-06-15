@@ -1,16 +1,21 @@
-from flask import Flask, render_template
+from configs import ProductionConfig, DevelopmentConfig, is_in_prod
+from database.db import initialize_db
+from flask import Flask
+from flask_restful import Api
+from resources.Users import Users
+from utils.JsonEncoder import MongoEngineJsonEncoder
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'zslzsl'
+config = ProductionConfig if is_in_prod() else DevelopmentConfig
+app.config.from_object(config)
+initialize_db(app)
+app.json_encoder = MongoEngineJsonEncoder
 
+api = Api(app)
 
-@app.route("/")
-def root():
-    """
-    :return: Index.html
-    """
-    return render_template('Index.html')
+api.add_resource(Users, '/users', '/users/<string:user_id>')
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port='5000')
+    app.run()
