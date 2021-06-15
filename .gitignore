@@ -61,4 +61,4 @@ venv.bak/
 .idea/dataSources.xml
 
 # Secrets
-secrets.py
+app_secrets.py
