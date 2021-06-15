@@ -3,20 +3,27 @@ import json
 import time
 import pymongo
 from bson.objectid import ObjectId
-
+from configs import ProductionConfig, DevelopmentConfig, is_in_prod
+from database.db import initialize_db
 from flask import request, Flask, jsonify
+from flask_restful import Api
+from resources.Users import Users
+from utils.JsonEncoder import MongoEngineJsonEncoder
 from flask_cors import *
-from concurrent.futures import ThreadPoolExecutor
 
 import hashlib
 import random
 
-# flask
-executor = ThreadPoolExecutor()
 app = Flask(__name__)
+config = ProductionConfig if is_in_prod() else DevelopmentConfig
+app.config.from_object(config)
+initialize_db(app)
+app.json_encoder = MongoEngineJsonEncoder
 
-# mongodb
-myclient = pymongo.MongoClient("mongodb:root:root@//localhost:27017/")
+api = Api(app)
+
+api.add_resource(Users, '/users', '/users/<string:user_id>')
+
 
 dbname = "data"
 tbUser = "users"
@@ -29,7 +36,6 @@ groupCol = mydb[tbGroup]
 
 tbname = ""
 mycol = {}
-
 
 def dbCol():
     global myclient, dbname, tbname
@@ -438,10 +444,5 @@ def group():
 
     return jsonify(result)
 
-
 if __name__ == '__main__':
-    app.run(
-        host='0.0.0.0',
-        port=8080,
-        debug=True
-    )
+    app.run()
