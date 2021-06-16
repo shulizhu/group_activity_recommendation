@@ -1,3 +1,4 @@
+from authentication.jwt import initialize_jwt
 from configs import ProductionConfig, DevelopmentConfig, is_in_prod
 from database.db import initialize_db
 from flask import Flask
@@ -8,9 +9,12 @@ from utils.JsonEncoder import MongoEngineJsonEncoder
 
 
 app = Flask(__name__)
+
 config = ProductionConfig if is_in_prod() else DevelopmentConfig
 app.config.from_object(config)
+
 initialize_db(app)
+initialize_jwt(app)
 app.json_encoder = MongoEngineJsonEncoder
 
 api = Api(app)
