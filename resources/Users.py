@@ -1,6 +1,7 @@
+from authentication.MobileAuth import verify_phone_number
 from configs import is_in_prod
-from flask import jsonify, Response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import jsonify, Response, request
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from flask_restful import Resource
 from services.UserService import *
 
@@ -24,3 +25,38 @@ class Users(Resource):
         else:
             entries = get_users_from_db()
             return jsonify(entries)
+
+    def post(self):
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            return Response(status=405)
+
+        phone_number = request.json.get('phoneNumber', None)
+        otp = request.json.get('otp', None)
+
+        if not phone_number or not otp:
+            return Response(response='Incomplete sign-up request', status=400)
+
+        verify_status = verify_phone_number(phone_number, otp)
+
+        if verify_status != 'approved':
+            return Response(response='Cannot fulfill request', status=400)
+
+        user = validate_user_login(phone_number)
+
+        if user:
+            return Response(
+                response='User with phone number exists. Please log in',
+                status=401
+            )
+
+        user = populate_user_db_entry(phone_number=phone_number)
+
+        user_id = str(user.id)
+        access_token = str(create_access_token(identity=user_id))
+
+        return {
+            'accessToken': access_token,
+            'userId': user_id,
+        }
+
