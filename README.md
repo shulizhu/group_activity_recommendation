@@ -25,11 +25,20 @@ project's root directory as shown below:
 ```python
 # MongoDb related secrets
 DATABASE_USERNAME = 'group_act_backend'
-DATABASE_PASSWORD = '<password>'
+DATABASE_PASSWORD = '<secret>'
 DATABASE_GROUP_ACT_HOSTNAME = 'mongodb://localhost:27017/group-act?retryWrites=true&w=majority'
 
 # Flask related secrets
-FLASK_APP_SECRET_KEY = '<secret_key>'
+FLASK_APP_SECRET_KEY = '<secret>'
+
+# Twilio related secrets
+TWILIO_ACCOUNT_SID = '<secret>'
+TWILIO_AUTH_TOKEN = '<secret>'
+TWILIO_VERIFY_SERVICE_ID = '<secret>'
+
+# JWT related secrets
+JWT_SECRET_KEY = '<secret>'
+
 ```
 
 You may ask the team members for the database password and the secret key for the app. 
