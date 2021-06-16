@@ -7,3 +7,4 @@ flask-restful==0.3.9
 requests==2.25.1
 bcrypt==3.2.0
 flask-jwt-extended==4.2.1
+twilio==6.59.1
