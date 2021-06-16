@@ -2,6 +2,7 @@ from configs import ProductionConfig, DevelopmentConfig, is_in_prod
 from database.db import initialize_db
 from flask import Flask
 from flask_restful import Api
+from resources.Sessions import Sessions
 from resources.Users import Users
 from utils.JsonEncoder import MongoEngineJsonEncoder
 
@@ -15,6 +16,7 @@ app.json_encoder = MongoEngineJsonEncoder
 api = Api(app)
 
 api.add_resource(Users, '/users', '/users/<string:user_id>')
+api.add_resource(Sessions, '/sessions')
 
 
 if __name__ == '__main__':
