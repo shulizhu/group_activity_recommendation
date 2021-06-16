@@ -16,7 +16,7 @@ def populate_user_db_entry(display_name: str, phone_number: str) -> UserDocument
 
 
 def get_user_entry(user_id: str) -> Union[type(None), UserDocument]:
-    entry = UserDocument.objects(resource_code=user_id).first()
+    entry = UserDocument.objects(id=user_id).first()
     return entry
 
 
