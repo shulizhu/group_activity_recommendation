@@ -1,6 +1,6 @@
-from flask import Response
+from flask import Response, jsonify
 from flask_restful import request, Resource, reqparse
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies
 from services.UserService import validate_user_login
 from authentication.MobileAuth import send_otp, verify_phone_number
 
@@ -43,9 +43,14 @@ class Sessions(Resource):
             )
 
         user_id = str(user.id)
-        access_token = str(create_access_token(identity=user_id))
+        access_token = create_access_token(identity=user_id)
 
-        return {
-            'accessToken': access_token,
-            'userId': user_id,
-        }
+        response = jsonify({'userId': user_id})
+        set_access_cookies(response, access_token)
+
+        return response
+
+    def delete(self):
+        response = Response(response='logout successful', status=200)
+        unset_jwt_cookies(response)
+        return response
