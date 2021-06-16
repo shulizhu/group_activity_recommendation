@@ -1,7 +1,8 @@
 from flask import Response
 from flask_restful import request, Resource, reqparse
+from flask_jwt_extended import create_access_token
 from services.UserService import validate_user_login
-from utils.Authentication import send_otp, verify_phone_number
+from authentication.MobileAuth import send_otp, verify_phone_number
 
 
 get_parser = reqparse.RequestParser()
@@ -42,6 +43,9 @@ class Sessions(Resource):
             )
 
         user_id = str(user.id)
+        access_token = str(create_access_token(identity=user_id))
+
         return {
+            'accessToken': access_token,
             'userId': user_id,
         }
