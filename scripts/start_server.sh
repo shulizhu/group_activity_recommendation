@@ -1,4 +1,5 @@
 #!/bin/bash
 
 sudo systemctl restart nginx
-server-start
+sudo systemctl start group-act-backend
+sudo systemctl enable group-act-backend

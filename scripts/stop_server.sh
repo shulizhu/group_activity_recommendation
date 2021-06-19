@@ -1,3 +1,4 @@
 #!/bin/bash
 
-server-stop
+sudo systemctl disable group-act-backend
+sudo systemctl stop group-act-backend

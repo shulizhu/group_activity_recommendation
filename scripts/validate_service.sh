@@ -1,3 +1,3 @@
 #!/bin/bash
 
-server-status
+sudo systemctl status group-act-backend
