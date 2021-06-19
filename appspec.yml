@@ -25,6 +25,8 @@ os: linux
 files:
   - source: /
     destination: group_act_backend
+
+file_exists_behavior: OVERWRITE
 # For deployments to Amazon Linux, Ubuntu Server, or RHEL instances,
 #   you can specify a "permissions"
 #   section here that describes special permissions to apply to the files
