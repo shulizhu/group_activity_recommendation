@@ -1,4 +1,4 @@
-from app_secrets import DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_GROUP_ACT_HOSTNAME, FLASK_APP_SECRET_KEY, JWT_SECRET_KEY
+from app_secrets import DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_GROUP_ACT_HOSTNAME_PROD, DATABASE_GROUP_ACT_HOSTNAME_DEV, FLASK_APP_SECRET_KEY, JWT_SECRET_KEY
 import datetime
 import os
 
@@ -22,7 +22,7 @@ class ProductionConfig(Config):
         'db': 'group-act',
         'username': DATABASE_USERNAME,
         'password': DATABASE_PASSWORD,
-        'host': DATABASE_GROUP_ACT_HOSTNAME
+        'host': DATABASE_GROUP_ACT_HOSTNAME_PROD
     }
 
 
@@ -33,7 +33,7 @@ class DevelopmentConfig(Config):
 
     MONGODB_SETTINGS = {
         'db': 'group-act',
-        'host': 'mongodb://localhost:27017/group-act?retryWrites=true&w=majority'
+        'host': DATABASE_GROUP_ACT_HOSTNAME_DEV
     }
 
 def is_in_prod():
