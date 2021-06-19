@@ -58,7 +58,7 @@ file_exists_behavior: OVERWRITE
 #   the "hooks" section altogether. A blank or incomplete "hooks" section
 #   may cause associated deployments to fail.
 
-#hooks:
+hooks:
 
 # For each deployment lifecycle event, specify multiple "location" entries
 #   if you want to run multiple scripts during that event.
