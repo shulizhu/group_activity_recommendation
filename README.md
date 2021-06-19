@@ -26,7 +26,9 @@ project's root directory as shown below:
 # MongoDb related secrets
 DATABASE_USERNAME = 'group_act_backend'
 DATABASE_PASSWORD = '<secret>'
-DATABASE_GROUP_ACT_HOSTNAME = 'mongodb://localhost:27017/group-act?retryWrites=true&w=majority'
+DATABASE_GROUP_ACT_HOSTNAME_PROD = '<remote_location>'
+DATABASE_GROUP_ACT_HOSTNAME_DEV = '<local_location>'
+
 
 # Flask related secrets
 FLASK_APP_SECRET_KEY = '<secret>'
@@ -38,9 +40,13 @@ TWILIO_VERIFY_SERVICE_ID = '<secret>'
 
 # JWT related secrets
 JWT_SECRET_KEY = '<secret>'
-
 ```
 
 You may ask the team members for the database password and the secret key for the app. 
 
 **DO NOT UPLOAD `app_secrets.py`**
+
+
+## Production and Deployment
+
+The production back-end server is currently run on Amazon EC2 through Gunicorn, the . 
