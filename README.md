@@ -45,9 +45,14 @@ You may ask the team members for the database password and the secret key for th
 
 **DO NOT UPLOAD `app_secrets.py`**
 
-## Production and Deployment
+## Production Server and Deployment
 
-The production back-end server is currently run on Amazon EC2 through Gunicorn. 
+The production back-end server is currently run on Amazon EC2 through Gunicorn, a Python WSGI (Web Server Gateway
+Interface) HTTP server. An Nginx reverse proxy is then set up to redirect HTTP requests received from port 80 and HTTPS
+requests received from port 443 to `127.0.0.1:8000`, the local port the Gunicorn server listens to.
+
+Code is deployed with AWS CodeDeploy.
+
 
 ## Postman Example:
 
