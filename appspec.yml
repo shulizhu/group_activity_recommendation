@@ -24,7 +24,7 @@ os: linux
 #   may cause associated deployments to fail.
 files:
   - source: /
-    destination: group_act_backend
+    destination: /home/ubuntu/group_act_backend
 
 file_exists_behavior: OVERWRITE
 # For deployments to Amazon Linux, Ubuntu Server, or RHEL instances,
@@ -101,10 +101,10 @@ hooks:
 # During the AfterInstall deployment lifecycle event, run the commands
 #   in the script specified in "location".
 
-#  AfterInstall:
-#    - location:
-#      timeout:
-#      runas:
+  AfterInstall:
+    - location: scripts/finish_install.sh
+        timeout: 300
+        runas: ubuntu
 
 # During the ApplicationStart deployment lifecycle event, run the commands
 #   in the script specified in "location".
