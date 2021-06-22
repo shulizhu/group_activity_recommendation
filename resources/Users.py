@@ -10,7 +10,13 @@ class Users(Resource):
 
     @jwt_required()
     def get(self, user_id=None):
+        """
+        :param user_id: user id
+        :return: a JSON object representing a particular user
+        """
         if user_id:
+            # Verify that the logged-in user id matches the one the user is
+            # is requesting.
             current_user_id = get_jwt_identity()
             if user_id == current_user_id:
                 entry = get_user_entry(user_id)

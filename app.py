@@ -4,12 +4,6 @@ import time
 import pymongo
 from bson.objectid import ObjectId
 from authentication.jwt import initialize_jwt
-import os
-import json
-import time
-import pymongo
-from bson.objectid import ObjectId
-from authentication.jwt import initialize_jwt
 from configs import ProductionConfig, DevelopmentConfig, is_in_prod
 from database.db import initialize_db
 from flask import request, Flask, jsonify
@@ -117,53 +111,6 @@ def index():
 
 
 # Users
-
-'''
-Id
-Display Name
-Phone number
-Activity Preferences
-(Token)
-Current Group
-
-'''
-
-'''
-    GET /users/:userId
-    Get the profile of a particular user.
-'''
-
-
-@app.route('/users/<userId>')
-def getUsers(userId):
-    global tbname, mycol
-
-    # print(userId)
-
-    try:
-        id = ObjectId(userId)
-    except:
-        id = ""
-
-    tbname = "users"
-    mycol = dbCol()
-    param = {
-        "_id": id
-    }
-
-    # print(param)
-    user = dbGetOne(param)
-    # print(user)
-
-    result = {}
-    if len(user) > 0:
-        result['id'] = str(user['_id'])
-        result['displayName'] = user['displayName']
-        result['phoneNumber'] = user['phoneNumber']
-        result['token'] = user['token']
-        result['group'] = user['group']
-
-    return jsonify(result)
 
 
 '''
