@@ -114,49 +114,6 @@ def index():
 
 
 '''
-    POST /users
-    Create a user account.
-'''
-
-
-@app.route('/users', methods=['POST'])
-def users():
-    global tbname, mycol
-
-    data = request.data
-    arr = json.loads(data)
-
-    print(arr)
-
-    tbname = "users"
-    mycol = dbCol()
-    param = {
-        "phoneNumber": arr['phoneNumber']
-    }
-    res = dbGetOne(param)
-    print(res)
-
-    if len(res) == 0:
-        row = {}
-        row['displayName'] = arr['displayName']
-        row['phoneNumber'] = arr['phoneNumber']
-        row['token'] = ""
-        row['group'] = ""
-        row['preference'] = ""
-
-        dbAdd(row)
-        msg = "ok"
-    else:
-        msg = "exist"
-
-    result = {
-        "msg": msg
-    }
-
-    return jsonify(result)
-
-
-'''
 PUT /users/:userId/preferences
 Update the user’s activity preferences with a new set.
 

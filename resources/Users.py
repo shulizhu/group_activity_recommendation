@@ -48,7 +48,7 @@ class Users(Resource):
 
         if user:
             return Response(
-                response='User with phone number exists. Please log in',
+                response='User with phone number exists. Please log in instead',
                 status=401
             )
 
@@ -61,4 +61,3 @@ class Users(Resource):
         set_access_cookies(response, access_token)
 
         return response
-
