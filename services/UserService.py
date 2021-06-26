@@ -57,11 +57,5 @@ def update_user_preferences(user_id: str, preferences: List[int] = []) -> bool:
     if len(preference_set) != len(preferences):
         return False
 
-    for preference in preferences:
-        if isinstance(preference, int) and 0 <= preference < len(ACTIVITY_TYPES):
-            pass
-        else:
-            return False
-
     user.update(set__preferences=preferences)
     return True
