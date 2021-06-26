@@ -10,6 +10,7 @@ from flask import request, Flask, jsonify
 from flask_restful import Api
 from resources.Sessions import Sessions
 from resources.Users import Users
+from resources.UserPreferences import UserPreferences
 from utils.JsonEncoder import MongoEngineJsonEncoder
 from flask_cors import *
 
@@ -28,6 +29,12 @@ app.json_encoder = MongoEngineJsonEncoder
 api = Api(app)
 
 api.add_resource(Users, '/users', '/users/<string:user_id>')
+api.add_resource(
+    UserPreferences,
+    '/users',
+    '/users/<string:user_id>',
+    '/users/<string:user_id>/preferences'
+)
 api.add_resource(Sessions, '/sessions')
 
 
@@ -108,57 +115,6 @@ def cors(environ):
 @app.route('/')
 def index():
     return 'api'
-
-
-# Users
-
-
-'''
-PUT /users/:userId/preferences
-Update the user’s activity preferences with a new set.
-
-[
-{activityType: x},
-… ]
-'''
-
-
-@app.route('/users/<userId>/preferences', methods=['PUT'])
-def setUsers(userId):
-    global tbname, mycol
-    res = "set user:" + str(userId)
-
-    data = request.data
-    arr = json.loads(data)
-
-    print(arr)
-
-    groupArr = []
-
-    for r in arr:
-        groupArr.append(r['activityType'])
-
-    groupStr = "|".join(groupArr)
-
-    tbname = "users"
-    mycol = dbCol()
-    param = {
-        "_id": ObjectId(userId)
-    }
-
-    data = {
-        "preference": groupStr
-    }
-    res = dbUpdate(param, data)
-
-
-    if res:
-        result = 'ok'
-    else:
-        result = 'no'
-
-    return result
-
 
 # Group
 '''
