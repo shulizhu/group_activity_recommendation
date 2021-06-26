@@ -3,6 +3,7 @@ from configs import is_in_prod
 from flask import jsonify, Response, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, set_access_cookies
 from flask_restful import Resource
+from flask import jsonify
 from services.UserService import *
 
 
