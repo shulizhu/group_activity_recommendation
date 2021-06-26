@@ -85,18 +85,28 @@ def generate_invite_code():
 
 
 def join_group(user_id: str, group: GroupDocument) -> bool:
+    """
+    Have a user join a group and update group activity preferences
+    accordingly. If the user is already a member of the group, this function
+    will just update the group activity preferences with any potential personal
+    preference changes by the user.
+
+    :param user_id: id of the user who's joining the group
+    :param group: group document of the target group
+    :return: True if the operation succeeds, False otherwise.
+    """
     user = get_user_entry(user_id)
     if not user:
         return False
 
-    if is_user_in_group(user):
-        return True
-    else:
-        new_group_preferences = _merge_group_preferences(
-            user.preferences, group.preferences)
+    if is_user_in_group(user_id, group):
         group.update(push__members=ObjectId(user_id))
-        group.update(set__preferences=new_group_preferences)
-        return True
+
+    new_group_preferences = _merge_group_preferences(
+        user.preferences, group.preferences)
+
+    group.update(set__preferences=new_group_preferences)
+    return True
 
 
 # TODO add group preferences merging logic.
