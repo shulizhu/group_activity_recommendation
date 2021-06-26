@@ -1,16 +1,12 @@
-import os
-import json
-import time
-import pymongo
-from bson.objectid import ObjectId
 from authentication.jwt import initialize_jwt
 from configs import ProductionConfig, DevelopmentConfig, is_in_prod
 from database.db import initialize_db
-from flask import request, Flask, jsonify
+from flask import request, Flask
 from flask_restful import Api
 from resources.Sessions import Sessions
 from resources.Users import Users
 from resources.UserPreferences import UserPreferences
+from resources.Groups import Groups
 from utils.JsonEncoder import MongoEngineJsonEncoder
 from flask_cors import *
 
@@ -36,6 +32,7 @@ api.add_resource(
     '/users/<string:user_id>/preferences'
 )
 api.add_resource(Sessions, '/sessions')
+api.add_resource(Groups, '/groups', '/groups/<string:group_id>')
 
 
 dbname = "data"
@@ -88,18 +85,6 @@ def dbUpdate(myquery, data):
     return x.modified_count
 
 
-def getRandomSet(bits):
-    num_set = [chr(i) for i in range(48, 58)]
-    char_set = [chr(i) for i in range(97, 123)]
-    total_set = num_set + char_set
-    value_set = str("".join(random.sample(total_set, bits)))
-    return value_set
-
-
-def getTime():
-    return int(time.time())
-
-
 def md5(data):
     return hashlib.md5(data.encode(encoding='UTF-8')).hexdigest()
 
@@ -117,75 +102,6 @@ def index():
     return 'api'
 
 # Group
-'''
-Id
-Invite Code
-Display Name
-Creator
-Password hash
-Password salt
-Aggregate Preferences
-Members
-
-
-Id
-Invite Code
-Creator
-(Password hash)
-(Password salt)
-Aggregate Preferences
-Members
-Timestamp
-Expiry Time
-
-'''
-
-'''
-    GET /group/:groupId
-    Get the profile of a particular group.
-'''
-
-
-@app.route('/groups/<groupId>')
-def getGroup(groupId):
-    global tbname, mycol
-
-    # print(groupId)
-
-    try:
-        id = ObjectId(groupId)
-    except:
-        id = ""
-
-    tbname = "groups"
-    mycol = dbCol()
-    param = {
-        "_id": id
-    }
-
-    # print(param)
-    row = dbGetOne(param)
-    # print(row)
-
-    result = {}
-    if len(row) > 0:
-        result['id'] = str(row['_id'])
-        result['displayName'] = row['displayName']
-
-        result['password'] = row['password']
-        result['passwordSalt'] = row['passwordSalt']
-
-        result['inviteCode'] = row['inviteCode']
-        result['creator'] = row['creator']
-
-        result['timestamp'] = row['timestamp']
-        result['expirytime'] = row['expirytime']
-
-        result['members'] = row['members']
-        result['preferences'] = row['preferences']
-
-    return jsonify(result)
-
 
 '''
     GET /groups?code=:inviteCode&pwd=:password
@@ -244,77 +160,6 @@ def joinGroups():
     else:
         res = "Group does not exist"
     return res
-
-
-'''
-PUT /groups
-Create a group.
-
-{ password: x }
-'''
-
-
-@app.route('/groups', methods=['POST'])
-def group():
-    global tbname, mycol
-
-    data = request.data
-    arr = json.loads(data)
-
-    print(arr)
-
-    tbname = "groups"
-    mycol = dbCol()
-
-    run = 1
-    i = 0
-    while run == 1:
-        i += 1
-        print("get inviteCode times:" + str(i))
-        code = getRandomSet(4)
-
-        param = {
-            "inviteCode": code
-        }
-        res = dbGetOne(param)
-        if len(res) == 0:
-            run = 0
-            break
-
-    salt = getRandomSet(6)
-
-    row = {}
-    row['displayName'] = arr['displayName']
-    row['password'] = md5(arr['password'] + salt)
-    row['passwordSalt'] = salt
-
-    row['inviteCode'] = code
-    row['creator'] = arr['creator']
-
-    row['timestamp'] = getTime()
-    row['expirytime'] = getTime() + 86400
-
-    row['members'] = arr['token']
-    row['preferences'] = ""
-
-    dbAdd(row)
-    result = {}
-    result['id'] = str(row['_id'])
-    result['displayName'] = row['displayName']
-
-    result['password'] = row['password']
-    result['passwordSalt'] = row['passwordSalt']
-
-    result['inviteCode'] = row['inviteCode']
-    result['creator'] = row['creator']
-
-    result['timestamp'] = row['timestamp']
-    result['expirytime'] = row['expirytime']
-
-    result['members'] = row['members']
-    result['preferences'] = row['preferences']
-
-    return jsonify(result)
 
 if __name__ == '__main__':
     app.run()
