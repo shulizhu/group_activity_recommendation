@@ -1,9 +1,10 @@
-from mongoengine import ValidationError, ObjectId
+from mongoengine import ValidationError
 from typing import List, Union, Optional
 import random
 import string
 import datetime
 from random import choices as random_choices
+from bson import ObjectId
 
 from models.Group import GroupDocument, GroupActivityEntryDocument
 from utils.PasswordValidator import *
