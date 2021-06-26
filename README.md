@@ -1,5 +1,52 @@
 # Group Act Back-end
 
+
+## Project File Structure
+
+### `app.py`
+
+This is the entry point of the entire backend service. The file includes code that:
+
+1. Initializes the server, the database, etc.
+2. Registers RESTful resources and defines the endpoints.
+3. Configures global settings.
+
+### `/authentication`
+
+This directory includes code that configures the environment for JWT tokens, which are used for managing logged-in user
+sessions, and helper functions for the Twilio Mobile Auth flow.
+
+### `/database`
+
+This directory includes code that configures the MongoDB database. 
+
+### `/models`
+
+This directory contains schema definitions of the 2 types of data objects used in this project: **Users** and
+**Groups**. These schema definitions match 1-to-1 with data document objects stored in the database (e.g. attribute
+names, attribute types, and attribute properties). The schemas are written in an object-oriented fashion, with the help
+of the `mongoengine` library. Each class attribute corresponds to a field of the data document object in the database.
+
+### `/resources`
+
+This directory contains all endpoint definitions (GET, PUT, POST, etc.) to manipulate the RESTful resources of the 
+service.
+
+### `/scripts`
+
+This directory contains scripts for auto-deployment by AWS CodeDeploy. 
+
+### `/services`
+
+This directory contains a series of helper functions for manipulating database document object, organized by the type of
+resource being manipulated on. For example, one of the services in this directory may include a function that populates
+a new User entry in the database.
+
+### `/utils`
+
+This directory contains a set of utility functions for the application.
+
+
 ## Runtime Environment Setup
 
 There are 2 runtime environments defined for this project: `dev`, and `prod`. 
