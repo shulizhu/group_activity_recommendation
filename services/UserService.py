@@ -1,4 +1,5 @@
 from models.User import UserDocument
+from mongoengine import ValidationError
 from typing import List, Union, Optional
 import random
 import string
@@ -18,12 +19,15 @@ def populate_user_db_entry(
         letters = string.ascii_lowercase
         display_name = ''.join(random.choice(letters) for i in range(10))
 
-    entry = UserDocument(
-        display_name=display_name,
-        phone_number=phone_number,
-    )
-    entry.save()
-    return entry
+    try:
+        entry = UserDocument(
+            display_name=display_name,
+            phone_number=phone_number,
+        )
+        entry.save()
+        return entry
+    except ValidationError as e:
+        raise e
 
 
 def get_user_entry(user_id: str) -> Union[type(None), UserDocument]:

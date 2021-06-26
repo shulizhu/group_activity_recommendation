@@ -12,6 +12,7 @@ class UserDocument(Document):
         unique=True,
     )
     preferences = ListField(
+        required=True,
         db_field='preferences',
         field=IntField(min_value=0, max_value=len(ACTIVITY_TYPES)-1)
     )
