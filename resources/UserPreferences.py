@@ -5,11 +5,11 @@ from services.UserService import *
 
 class UserPreferences(Resource):
 
-    @jwt_required
+    @jwt_required()
     def put(self, user_id=None):
         """
         :param user_id: user id
-        :return: a JSON object representing a particular user
+        :return: operation succeededX or not
         """
         if not user_id:
             return Response(response='Invalid Request', status=400)
