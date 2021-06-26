@@ -6,7 +6,7 @@ import os
 class Config(object):
     JWT_SECRET_KEY = JWT_SECRET_KEY
     JWT_TOKEN_LOCATION = ['cookies']
-    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=1)
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=1)
     # Always send cookie over https.
     JWT_COOKIE_SECURE = True
     JWT_COOKIE_CSRF_PROTECT = True
