@@ -1,12 +1,13 @@
-from mongoengine import ValidationError
+from mongoengine import ValidationError, ObjectId
 from typing import List, Union, Optional
 import random
 import string
 import datetime
 from random import choices as random_choices
 
-from models.Group import GroupDocument
+from models.Group import GroupDocument, GroupActivityEntryDocument
 from utils.PasswordValidator import *
+from services.UserService import get_user_entry
 from utils.ActivityTypes import ACTIVITY_TYPES
 
 
@@ -27,16 +28,17 @@ def populate_group_db_entry(
         password_hash = get_password_hash(password)
         created_time = datetime.datetime.utcnow()
         expiry_time = created_time + datetime.timedelta(hours=1)
+        user = get_user_entry(creator_id)
+        group_preferences = _merge_group_preferences(user.preferences, [])
         entry = GroupDocument(
             display_name=display_name,
             invite_code=generate_invite_code(),
-            creator_id=creator_id,
+            creator_id=ObjectId(creator_id),
             password_hash=password_hash,
             created_time=created_time,
             expiry_time=expiry_time,
-            # TODO add preferences insertion logic.
-            preferences=[],
-            members=[creator_id],
+            preferences=group_preferences,
+            members=[ObjectId(creator_id)],
         )
         entry.save()
         return entry
@@ -52,17 +54,18 @@ def get_group_entry(group_id: str) -> Union[type(None), GroupDocument]:
 
 
 def get_group_entry_by_invite_code(
-    invite_code: str) -> Union[type(None), GroupDocument]:
+    invite_code: str,
+    password: Optional[str] = ''
+) -> Union[type(None), GroupDocument]:
     entry = GroupDocument.objects(invite_code=invite_code).first()
-    return entry
+    if validate_password(password, entry):
+        return entry
+    else:
+        return None
 
 
-def is_user_in_group(user_id: str, group_id: str) -> bool:
-    group = get_group_entry(group_id)
-
-    if not group:
-        return False
-    return user_id in group.members
+def is_user_in_group(user_id: str, group: GroupDocument) -> bool:
+    return ObjectId(user_id) in group.members
 
 
 def get_random_code(code_length):
@@ -78,3 +81,26 @@ def generate_invite_code():
     while get_group_entry_by_invite_code(code):
         code = get_random_code(4)
     return code
+
+
+def join_group(user_id: str, group: GroupDocument) -> bool:
+    user = get_user_entry(user_id)
+    if not user:
+        return False
+
+    if is_user_in_group(user):
+        return True
+    else:
+        new_group_preferences = _merge_group_preferences(
+            user.preferences, group.preferences)
+        group.update(push__members=ObjectId(user_id))
+        group.update(set__preferences=new_group_preferences)
+        return True
+
+
+# TODO add group preferences merging logic.
+def _merge_group_preferences(
+    user_preferences: List[int],
+    group_preferences: List[GroupActivityEntryDocument]
+):
+    return []

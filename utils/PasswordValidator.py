@@ -18,11 +18,11 @@ def get_password_hash(password: str):
 def validate_password(
     password: str,
     entry: Optional[GroupDocument] = None,
-) -> Tuple[bool, Optional[GroupDocument]]:
+) -> bool:
     if not entry:
-        return False, None
+        return False
 
     password_checked = bcrypt.checkpw(
         password.encode('utf8'), entry.password_hash.encode('utf8'))
 
-    return password_checked, entry if password_checked else None
+    return password_checked
