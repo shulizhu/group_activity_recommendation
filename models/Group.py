@@ -32,7 +32,6 @@ class GroupDocument(Document):
     # Group preferences is a map where <key: activity enum, value: score>
     preferences = ListField(
         db_field='preferences',
-        required=True,
         field=EmbeddedDocumentField(GroupActivityEntryDocument)
     )
     members = ListField(
