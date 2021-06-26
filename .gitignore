@@ -60,5 +60,6 @@ venv.bak/
 .idea/shelf/
 .idea/dataSources.xml
 
-# Secrets
+# Local files
 app_secrets.py
+build
