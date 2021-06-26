@@ -1,6 +1,7 @@
 from flask import Response, jsonify
 from flask_restful import request, Resource, reqparse
-from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies
+from flask_jwt_extended import jwt_required, create_access_token, set_access_cookies, unset_jwt_cookies
+
 from services.UserService import validate_user_login
 from authentication.MobileAuth import send_otp, verify_phone_number
 
@@ -50,6 +51,7 @@ class Sessions(Resource):
 
         return response
 
+    @jwt_required()
     def delete(self):
         response = Response(response='logout successful', status=200)
         unset_jwt_cookies(response)
