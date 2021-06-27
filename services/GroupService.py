@@ -99,7 +99,7 @@ def join_group(user_id: str, group: GroupDocument) -> bool:
     if not user:
         return False
 
-    if is_user_in_group(user_id, group):
+    if not is_user_in_group(user_id, group):
         group.update(push__members=ObjectId(user_id))
 
     new_group_preferences = _merge_group_preferences(
