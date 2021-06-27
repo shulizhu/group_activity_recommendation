@@ -57,7 +57,7 @@ class Users(Resource):
         user_id = str(user.id)
         access_token = create_access_token(identity=user_id)
 
-        response = jsonify({'userId': user_id})
+        response = jsonify(user)
         set_access_cookies(response, access_token)
 
         return response

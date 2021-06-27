@@ -21,7 +21,9 @@ class Sessions(Resource):
 
         send_otp(phone_number if phone_number[0] == '+' else '+' + phone_number)
 
-        return Response(response='Success', status=200)
+        user = validate_user_login(phone_number)
+
+        return jsonify({'accountExists': bool(user)})
 
     def post(self):
         phone_number = request.json.get('phoneNumber', None)
@@ -46,7 +48,7 @@ class Sessions(Resource):
         user_id = str(user.id)
         access_token = create_access_token(identity=user_id)
 
-        response = jsonify({'userId': user_id})
+        response = jsonify(user)
         set_access_cookies(response, access_token)
 
         return response
