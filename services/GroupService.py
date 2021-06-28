@@ -66,10 +66,6 @@ def get_group_entry_by_invite_code(
 
 
 def is_user_in_group(user_id: str, group: GroupDocument) -> bool:
-    for item in group:
-        print (item)
-    print (ObjectId(user_id) in group.members)
-    print (ObjectId(user_id))
     return ObjectId(user_id) in group.members
 
 
