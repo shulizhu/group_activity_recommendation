@@ -109,9 +109,28 @@ def join_group(user_id: str, group: GroupDocument) -> bool:
     return True
 
 
-# TODO add group preferences merging logic.
+# TODO: Need do more testing on merging logic.
 def _merge_group_preferences(
     user_preferences: List[int],
     group_preferences: List[GroupActivityEntryDocument]
 ):
-    return []
+    existed_activities = []
+    group_count = len(group_preferences)
+    for i in range(0, group_count):
+        existed_activities.append(group_preferences[i].activity_type)
+
+    user_count = len(user_preferences)
+
+# TODO:Temporarily set to retain four digits after the decimal point. Can change
+    for i in range(0, user_count):
+        if user_preferences[i] in existed_activities:
+            index_activity = existed_activities.index(user_preferences[i])
+            group_preferences[index_activity].activity_score += round(float(1 / (i+1)), 4)
+        else:
+            new_group_activity_entry_document = GroupActivityEntryDocument()
+            new_group_activity_entry_document.activity_type = user_preferences[i]
+            new_group_activity_entry_document.activity_score = round(float(1 / (i+1)), 4)
+            group_preferences.append(new_group_activity_entry_document)
+
+    sorted_group_preferences = sorted(group_preferences, key=lambda k: k.activity_score, reverse=True)
+    return sorted_group_preferences
