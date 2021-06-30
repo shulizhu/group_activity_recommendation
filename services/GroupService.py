@@ -103,13 +103,15 @@ def join_group(user_id: str, group: GroupDocument) -> bool:
     if not user:
         return False
 
-    if is_user_in_group(user_id, group):
-        # TODO: When a user, who has joined a group, rejoins again, it is
-        #  likely that the user's preferences have changed. Therefore we need
-        # to have business logic that accounts for this corner case.
-        return True
+    if not is_user_in_group(user_id, group):
+        group.update(push__members=ObjectId(user_id))
 
-    group.update(push__members=ObjectId(user_id))
+    # TODO: When a user, who has joined a group, rejoins again, it is
+    # likely that the user's preferences have changed. Therefore we need to have
+    # business logic that accounts for this corner case (remove user's old
+    # preferences from the group preferences, and merge with the user's new
+    # preferences). At the moment, we have only implemented the second part of
+    # the logic, not removing user's old preferences from group yet.
 
     new_group_preferences = _merge_group_preferences(
         user.preferences, group.preferences)
