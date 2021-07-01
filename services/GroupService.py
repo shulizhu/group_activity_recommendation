@@ -66,7 +66,11 @@ def get_group_entry_by_invite_code(
 
 
 def is_user_in_group(user_id: str, group: GroupDocument) -> bool:
-    return ObjectId(user_id) in group.members
+    user_id = ObjectId(user_id)
+    for member in group.members:
+        if user_id == member.id:
+            return True
+    return False
 
 
 def get_random_code(code_length):
@@ -99,8 +103,13 @@ def join_group(user_id: str, group: GroupDocument) -> bool:
     if not user:
         return False
 
-    if not is_user_in_group(user_id, group):
-        group.update(push__members=ObjectId(user_id))
+    if is_user_in_group(user_id, group):
+        # TODO: When a user, who has joined a group, rejoins again, it is
+        #  likely that the user's preferences have changed. Therefore we need
+        # to have business logic that accounts for this corner case.
+        return True
+
+    group.update(push__members=ObjectId(user_id))
 
     new_group_preferences = _merge_group_preferences(
         user.preferences, group.preferences)
